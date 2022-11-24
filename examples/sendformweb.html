@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style type="text/css">
+      #root {
+        max-width: 340px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Begin BotJavaScriptSDK Code -->
+    <script type="text/javascript">
+      var url =
+        "https://botsmtpvue.testing.comm100dev.io/visitorside/js/botJavaScriptSDK.js";
+      var BotJavaScriptSDK = BotJavaScriptSDK || {};
+      (function (t) {
+        function e(e) {
+          var a = document.createElement("script"),
+            c = document.getElementsByTagName("script")[0];
+          (a.type = "text/javascript"),
+            (a.async = !0),
+            (a.src = e),
+            c.parentNode.insertBefore(a, c);
+        }
+        e(url);
+        setTimeout(function () {
+          t.loaded || e(url);
+        }, 5e3);
+      })(BotJavaScriptSDK);
+    </script>
+    <!-- End BotJavaScriptSDK Code -->
+
+    <script type="text/babel">
+      const { useState, useEffect } = React;
+      const keyArr = [
+        "livechat.siteId",
+        "livechat.campaignId",
+        "livechat.chatId",
+        "livechat.customVariables",
+        "bot.botInfo",
+        "bot.variables",
+        "bot.visitorInfo",
+      ];
+      const App = function () {
+        const [data, setData] = useState({});
+        const [shows, setShows] = useState({
+          getShow: false,
+          setShow: false,
+          doShow: true,
+        });
+        React.useEffect(() => {
+          BotJavaScriptSDK.onReady = function () {
+            console.log(BotJavaScriptSDK);
+            const data = {};
+            keyArr.forEach((key) => {
+              data[key] = BotJavaScriptSDK.get(key);
+            });
+            setData(data);
+            console.log(data);
+          };
+          return () => {};
+        }, []);
+
+        const handleShow = (e) => {
+          const { name } = e.target;
+          const nShow = { ...shows };
+          nShow[name] = !shows[name];
+          setShows(nShow);
+        };
+
+        const handleSet = (e) => {
+          const { name } = e.target;
+          if (name === "customVariables") {
+            const name =
+              document.getElementById("customVariablesName").value || "";
+            const value =
+              document.getElementById("customVariablesValue").value || "";
+            console.log("customVariables", name, value);
+            BotJavaScriptSDK.set("livechat.customVariables", [
+              { name: name, value: value },
+            ]);
+          } else if (name === "botVariable") {
+            const name = document.getElementById("botVariableName").value || "";
+            const value =
+              document.getElementById("botVariableValue").value || "";
+            BotJavaScriptSDK.set("bot.variable", {
+              name: name,
+              value: value,
+            });
+          }
+        };
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          const form = document.getElementById("form");
+          // console.dir(form, form.name.value, form.email.value);
+          console.log(form.name.value, form.email.value);
+          BotJavaScriptSDK.do(
+            "bot.sendForm.submit",
+            `submit success! \n name: ${form.name.value} \n email: ${form.email.value}`
+          );
+        };
+
+        const handleCancel = (e) => {
+          e.preventDefault();
+          BotJavaScriptSDK.do("bot.sendForm.close");
+        };
+        return (
+          <div>
+            <h4>
+              Get values{" "}
+              <button name="getShow" onClick={handleShow}>
+                {shows.getShow ? "hide" : "show"}
+              </button>
+            </h4>
+            {shows.getShow && (
+              <ul>
+                {keyArr.map((key) => (
+                  <li key={key}>
+                    <strong>{key}:</strong>
+                    {JSON.stringify(data[key])}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <h4>
+              Set values{" "}
+              <button name="setShow" onClick={handleShow}>
+                {shows.setShow ? "hide" : "show"}
+              </button>
+            </h4>
+            {shows.setShow && (
+              <div>
+                <h5>LiveChat Custom Variables</h5>
+                <div>
+                  <div>
+                    <label>name： </label>
+                    <input
+                      type="text"
+                      id="customVariablesName"
+                      defaultValue="aname"
+                    />
+                  </div>
+                  <div>
+                    <label>value： </label>
+                    <input type="text" id="customVariablesValue" />
+                  </div>
+                </div>
+                <button name="customVariables" onClick={handleSet}>
+                  Set
+                </button>
+                <h5>Bot Variable</h5>
+                <div>
+                  <div>
+                    <label>name： </label>
+                    <input
+                      type="text"
+                      id="botVariableName"
+                      defaultValue="Name"
+                    />
+                  </div>
+                  <div>
+                    <label>value： </label>
+                    <input type="text" id="botVariableValue" />
+                  </div>
+                </div>
+                <button name="botVariable" onClick={handleSet}>
+                  Set
+                </button>
+              </div>
+            )}
+            <h4>
+              Form{" "}
+              <button name="doShow" onClick={handleShow}>
+                {shows.doShow ? "hide" : "show"}
+              </button>
+            </h4>
+            {shows.doShow && (
+              <div>
+                <form id="form">
+                  <div>
+                    <label>name： </label>
+                    <input type="text" name="name" />
+                  </div>
+                  <div>
+                    <label>email： </label>
+                    <input type="text" name="email" />
+                  </div>
+                  <br />
+                  <button type="text" onClick={handleSubmit}>
+                    Submit
+                  </button>
+                  &nbsp;
+                  <button onClick={handleCancel}>Cancel</button>
+                </form>
+              </div>
+            )}
+          </div>
+        );
+      };
+      const container = document.getElementById("root");
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+
+      /**
+       * @param {string} type - Type of data to get, you can find all types in doc below.
+       * @return {any} result.
+       */
+      BotJavaScriptSDK.get("type");
+
+      /**
+       * @param {string} type - Type of data to set, you can find all types in doc below.
+       * @param {any} value - Value that will be set.
+       */
+      BotJavaScriptSDK.set("type", value);
+
+      /**
+       * @param {string} type - Type of action to do, you can find all types in doc below.
+       * @param {any} value - Value that will be send.
+       * finished successfully or not.  nothing will be returned.
+       */
+      BotJavaScriptSDK.do("type", value);
+    </script>
+  </body>
+</html>
