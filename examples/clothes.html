@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping</title>
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style type="text/css">
+      #root {
+        max-width: 340px;
+      }
+      .item {
+        margin: 10px;
+      }
+      .item label {
+        width: 60px;
+        display: inline-block;
+      }
+      .item select {
+        width: 200px;
+        padding: 2px 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Begin BotJavaScriptSDK Code -->
+    <script type="text/javascript">
+      var url =
+        "https://botsmtpvue.testing.comm100dev.io/visitorside/js/botJavaScriptSDK.js";
+      var BotJavaScriptSDK = BotJavaScriptSDK || {};
+      (function (t) {
+        function e(e) {
+          var a = document.createElement("script"),
+            c = document.getElementsByTagName("script")[0];
+          (a.type = "text/javascript"),
+            (a.async = !0),
+            (a.src = e),
+            c.parentNode.insertBefore(a, c);
+        }
+        e(url);
+        setTimeout(function () {
+          t.loaded || e(url);
+        }, 5e3);
+      })(BotJavaScriptSDK);
+    </script>
+    <!-- End BotJavaScriptSDK Code -->
+
+    <script type="text/babel">
+      const { useState, useEffect, useMemo } = React;
+      const maleProduct = ["Shirt", "Shoes"];
+      const femaleProduct = ["Skirt", "Shoes"];
+      const maleSize = ["XXL", "XL", "L", "M"];
+      const femaleSize = ["L", "M", "S"];
+      const maleColor = ["Black", "Blue"];
+      const femaleColor = ["Red", "White"];
+      const App = function () {
+        const [gender, setGender] = useState("");
+        const [product, setProduct] = useState("");
+        const [size, setSize] = useState("");
+        const [color, setColor] = useState("");
+        React.useEffect(() => {
+          BotJavaScriptSDK.onReady = function () {
+            const variables = BotJavaScriptSDK.get("bot.variables");
+            const product = variables["{!Variable.Product}"];
+            const fProduct = femaleProduct.find(
+              (item) => item.toLowerCase() === product.toLowerCase()
+            );
+            const mProduct = maleProduct.find(
+              (item) => item.toLowerCase() === product.toLowerCase()
+            );
+            console.log(product, fProduct, mProduct);
+            if (fProduct && mProduct) {
+              setProduct(fProduct);
+            } else if (fProduct) {
+              setTimeout(() => {
+                setProduct(fProduct);
+              }, 100);
+              setGender("Female");
+            } else if (mProduct) {
+              setGender("Male");
+              setTimeout(() => {
+                setProduct(mProduct);
+              }, 100);
+            }
+          };
+          return () => {};
+        }, []);
+
+        const handleGenderChange = (e) => {
+          const gender = e.target.value;
+          setGender(gender);
+          //   setProduct(gender === "female" ? femaleProduct[0] : maleProduct[0]);
+        };
+        const handleProductChange = (e) => {
+          const product = e.target.value;
+          setProduct(product);
+          //   setSize(gender === "female" ? femaleSize[0] : maleSize[0]);
+          //   setColor(gender === "female" ? femaleColor[0] : maleColor[0]);
+        };
+        const handleSizeChange = (e) => {
+          setSize(e.target.value);
+        };
+        const handleColorChange = (e) => {
+          setColor(e.target.value);
+        };
+
+        const products = useMemo(() => {
+          return gender === "Female" ? femaleProduct : maleProduct;
+        }, [gender]);
+
+        const sizes = useMemo(() => {
+          return gender === "Female" ? femaleSize : maleSize;
+        }, [gender]);
+
+        const colors = useMemo(() => {
+          return gender === "Female" ? femaleColor : maleColor;
+        }, [gender]);
+
+        const handleSubmit = (e) => {
+          e.preventDefault();
+          console.log(gender, product, size, color);
+          // BotJavaScriptSDK.set("bot.variable", {
+          //   name: "gender",
+          //   value: gender,
+          // });
+          // BotJavaScriptSDK.set("bot.variable", {
+          //   name: "product",
+          //   value: product,
+          // });
+          // BotJavaScriptSDK.set("bot.variable", {
+          //   name: "size",
+          //   value: size,
+          // });
+          // BotJavaScriptSDK.set("bot.variable", {
+          //   name: "color",
+          //   value: color,
+          // });
+          BotJavaScriptSDK.do(
+            "bot.sendForm.submit",
+            `Thank you for choosing [${gender}]’s [${product}] with [${size}] size and [${color}] color.`
+          );
+        };
+
+        const handleCancel = (e) => {
+          e.preventDefault();
+          BotJavaScriptSDK.do("bot.sendForm.close");
+        };
+        return (
+          <div>
+            <h4>Shopping</h4>
+            <div className="item">
+              <label>Gender: </label>
+              <select value={gender} onChange={handleGenderChange}>
+                <option value="">--Please choose an option--</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+            <div className="item">
+              <label>Product: </label>
+              <select
+                value={product}
+                onChange={handleProductChange}
+                disabled={gender === ""}
+              >
+                <option value="">--Please choose an option--</option>
+                {products.map((item) => (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="item">
+              <label>Size: </label>
+              <select
+                value={size}
+                onChange={handleSizeChange}
+                disabled={product === ""}
+              >
+                <option value="">--Please choose an option--</option>
+                {sizes.map((item) => (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="item">
+              <label>Color: </label>
+              <select
+                value={color}
+                onChange={handleColorChange}
+                disabled={product === ""}
+              >
+                <option value="">--Please choose an option--</option>
+                {colors.map((item) => (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="item">
+              <button
+                type="text"
+                onClick={handleSubmit}
+                disabled={
+                  gender === "" || product === "" || size === "" || color === ""
+                }
+              >
+                Submit
+              </button>
+              &nbsp;
+              <button onClick={handleCancel}>Cancel</button>
+            </div>
+          </div>
+        );
+      };
+      const container = document.getElementById("root");
+      const root = ReactDOM.createRoot(container);
+      root.render(<App />);
+    </script>
+  </body>
+</html>
