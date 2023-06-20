@@ -23,25 +23,26 @@
   <body>
     <div id="root"></div>
     <!-- Begin BotJavaScriptSDK Code -->
-    <script type="text/javascript">
-      var url =
-        "https://botsmtpvue.testing.comm100dev.io/visitorside/js/botJavaScriptSDK.js";
-      var BotJavaScriptSDK = BotJavaScriptSDK || {};
-      (function (t) {
-        function e(e) {
-          var a = document.createElement("script"),
-            c = document.getElementsByTagName("script")[0];
-          (a.type = "text/javascript"),
-            (a.async = !0),
-            (a.src = e),
-            c.parentNode.insertBefore(a, c);
-        }
-        e(url);
-        setTimeout(function () {
-          t.loaded || e(url);
-        }, 5e3);
-      })(BotJavaScriptSDK);
-    </script>
+    <!-- Begin BotJavaScriptSDK Code -->
+<script type="text/javascript">
+    var url = "https://vue.comm100.com/visitorside/js/botJavaScriptSDK.js";
+    var BotJavaScriptSDK = BotJavaScriptSDK || {};
+    (function (t) {
+    function e(e) {
+        var a = document.createElement("script"),
+        c = document.getElementsByTagName("script")[0];
+        (a.type = "text/javascript"),
+        (a.async = !0),
+        (a.src = e),
+        c.parentNode.insertBefore(a, c);
+    }
+    e(url);
+    setTimeout(function () {
+        t.loaded || e(url);
+    }, 5e3);
+    })(BotJavaScriptSDK);
+</script>
+<!-- End BotJavaScriptSDK Code -->
     <!-- End BotJavaScriptSDK Code -->
 
     <script type="text/babel">
